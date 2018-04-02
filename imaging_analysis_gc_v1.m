@@ -1,5 +1,5 @@
 %% load the analog signals from the MDF files and extract the event
-analog = SettingTwoPhoton('RVKC314_020518_imaging');
+analog = SettingTwoPhoton('RVKC314_020218_imaging');
 for i = 1:length(analog)
     info = analog2p(analog(i).data,10000);
     analog(i).frame = info.frame;
@@ -29,6 +29,7 @@ ind = [dat.stat.iscell];
 info.totalNeuron = sum(ind);
 F = dat.Fcell{1};
 info.F = F(find(ind==1),:);
+info.idex = find(ind==1)
 coeff = [dat.stat(find(ind==1)).neuropilCoefficient];
 neuroF = dat.FcellNeu{1};
 info.neuroF = neuroF(find(ind==1),:);
@@ -36,7 +37,7 @@ for i = 1:length(coeff)
     Fcell(i,:) = info.F(i,:)-coeff(i)*info.neuroF(i,:);
 
 end
-Fcell = info.F-coeff.*info.neuroF;
+% Fcell = info.F-coeff.*info.neuroF;
 Fcell(28,:) =[];
 figure;
 F0 = median(Fcell,2);
@@ -45,8 +46,8 @@ dF_F = dF./repmat(F0,1,size(Fcell,2));
 imagesc(dF_F)
 
 figure;
-for i =1:size(Fcell,1)
-    plot(dF_F(i,:)+i,'k')
+for i =6:size(Fcell,1)/2
+    plot(dF_F(2*(i-6)+6,:)+i,'k')
     hold on
     
 end
@@ -484,7 +485,7 @@ plot(analog(1).timepointTaste,cell_avg+3)
 end
 %% plot the spatial map
 % for sucrose
-s_ind = find(Tresp_boot(4,:)==1);
+s_ind = find(Tresp_boot(1,:)==1);
 ind = [dat.stat.iscell];
 loc = dat.stat(find(ind ==1));
 figure;imshow(image)
@@ -507,7 +508,7 @@ i = s_ind;
        hold on
  end
 xlim([1,512]);ylim([1,512])
-imagesc(image2)
+% imagesc(image2)
 [B,L] = bwboundaries(image,'noholes');
 figure;imshow(image)
 hold on
